@@ -267,13 +267,19 @@ export const AutocompleteDropdown = memo((props: IAutocompleteDropdownProps) => 
 
   useEffect(() => {
     // renew state on close
-    if (!isOpened && selectedItem && !loading && !inputRef.current?.isFocused()) {
-      setInputValue(selectedItem.title || '')
+    if (!isOpened && !loading && !inputRef.current?.isFocused()) {
+      if (!clearOnFocus && searchText && searchText !== selectedItem.title) {
+        setSelectedItem({id :'new', title: searchText})
+      } else if (selectedItem) {
+        setInputValue(selectedItem.title || '');
+      }
     }
   }, [isOpened, loading, searchText, selectedItem])
 
   const _onSelectItem = useCallback((item: AutocompleteDropdownItem) => {
+    setSearchText('')
     setSelectedItem(item)
+    setInputValue(item.title || '')
     inputRef.current?.blur()
     setIsOpened(false)
   }, [])
