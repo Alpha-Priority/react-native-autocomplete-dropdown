@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useMemo, useRef, useState, useContext } from 'react'
+import React, { memo, useImperativeHandle, useCallback, useEffect, useMemo, useRef, useState, useContext } from 'react'
 import debounce from 'lodash.debounce'
 import type {
   GestureResponderEvent,
@@ -124,6 +124,17 @@ export const AutocompleteDropdown = memo((props: IAutocompleteDropdownProps) => 
     [setDirection],
   )
 
+  useImperativeHandle(ref, () => {
+    return {
+      clear() {
+        setSearchText('')
+        setInputValue('')
+        setSelectedItem(null)
+        setIsOpened(false)
+      }
+    }
+  }, [setSearchText, setInputValue, setSelectedItem, setIsOpened])
+
   const onClearPress = useCallback(() => {
     setSearchText('')
     setInputValue('')
@@ -165,16 +176,6 @@ export const AutocompleteDropdown = memo((props: IAutocompleteDropdownProps) => 
   const clear = useCallback(() => {
     onClearPress()
   }, [onClearPress])
-
-  useEffect(() => {
-    if (ref) {
-      if (typeof ref === 'function') {
-        ref(inputRef.current)
-      } else {
-        ref.current = inputRef.current
-      }
-    }
-  }, [ref])
 
   /** Set initial value */
   useEffect(() => {
