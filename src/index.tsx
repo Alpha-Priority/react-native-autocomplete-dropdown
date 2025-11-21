@@ -78,6 +78,7 @@ export const AutocompleteDropdown = memo(
     const InputComponent = (props.InputComponent as typeof TextInput) || TextInput
     const inputRef = useRef<TextInput>(null)
     const containerRef = useRef<View>(null)
+    const isSelectingItemRef = useRef(false)
     const [searchText, setSearchText] = useState('')
     const [inputValue, setInputValue] = useState('')
     const [loading, setLoading] = useState(loadingProp)
@@ -281,11 +282,13 @@ export const AutocompleteDropdown = memo(
     }, [isOpened, loading, searchText, selectedItem])
 
     const _onSelectItem = useCallback((item: AutocompleteDropdownItem) => {
+      isSelectingItemRef.current = true
       setSearchText('')
       setSelectedItem(item)
       setInputValue(item.title || '')
       inputRef.current?.blur()
       setIsOpened(false)
+      setTimeout(() => isSelectingItemRef.current = false, 5000)
     }, [])
 
     useEffect(() => {
@@ -367,6 +370,10 @@ export const AutocompleteDropdown = memo(
 
     const onChangeText = useCallback(
       (text: string) => {
+        if (isSelectingItemRef.current) {
+          isSelectingItemRef.current = false
+          return
+        }
         setSearchText(text)
         setInputValue(text)
         setLoading(true)
