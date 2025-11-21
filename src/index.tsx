@@ -288,7 +288,7 @@ export const AutocompleteDropdown = memo(
       setInputValue(item.title || '')
       inputRef.current?.blur()
       setIsOpened(false)
-      setTimeout(()=> isSelectingItemRef.current = false, 5000)
+      setTimeout(() => isSelectingItemRef.current = false, 5000)
     }, [])
 
     useEffect(() => {
